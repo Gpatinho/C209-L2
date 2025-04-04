@@ -1,14 +1,15 @@
 import os
+
+import PIL.Image
 from PIL import Image
-import matplotlib.pyplot as pl
+import matplotlib.pyplot as plt #MUDEI ESSA LINHA AQUI
 
 # Caminhos das imagens
-img1_path = 'c:\\Users\\marce\\OneDrive\\Área de Trabalho\\C209-L2 PROJETO-1\\P1.jpg'
-img2_path = 'c:\\Users\\marce\\OneDrive\\Área de Trabalho\\C209-L2 PROJETO-1\\P2.jpg'
-img3_path = 'c:\\Users\\marce\\OneDrive\\Área de Trabalho\\C209-L2 PROJETO-1\\P3.jpg'
-img4_path = 'c:\\Users\\marce\\OneDrive\\Área de Trabalho\\C209-L2 PROJETO-1\\P4.jpg'
+img1_path = 'P1.jpg'
+img2_path = 'P2.jpg'
+img3_path = 'P3.jpg'
+img4_path = 'P4.jpg'
 
-# Abrir as imagens
 img1 = Image.open(img1_path)
 img2 = Image.open(img2_path)
 img3 = Image.open(img3_path)
@@ -24,7 +25,7 @@ largura_total = img1.width + img2.width + img3.width + img4.width
 def redimensionar_imagem(imagem, altura_maxima):
     proporcao = altura_maxima / float(imagem.height)
     largura_nova = int(imagem.width * proporcao)
-    return imagem.resize((largura_nova, altura_maxima), Image.ANTIALIAS)
+    return imagem.resize((largura_nova, altura_maxima), PIL.Image.Resampling.LANCZOS)
 
 
 # Redimensionar todas as imagens para a altura máxima
@@ -51,3 +52,5 @@ plt.axis('off')  # Desliga os eixos para uma visualização mais limpa
 plt.show()  # Mostra a imagem
 imagem_combinada.save('imagem_combinada.jpg')
 type(imagem_combinada)
+
+print("Diretório atual:", os.getcwd())
