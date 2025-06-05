@@ -1,0 +1,55 @@
+# Parte 1:
+import moviepy.editor as mpe 
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parte 2:
+video_path = r ' Caminho para o seu video original sem alteraçõe ' #'C:\Users\Patinho\Desktop\C209_L2_trabalho_2\Ney_te_amo.mp4'
+video = mpe.VideoFileClip(video_path)
+
+# Parte 3:
+def invert_axis(clip):
+    return clip.fl_image(lambda frame: np.flipud(frame)) 
+
+chunks = []
+for i in range(0, int(video.duration), 20):
+    chunk = video.subclip(i, min(i + 20, video.duration))
+    if (i // 20) % 2 == 1:  
+        chunk = invert_axis(chunk)
+    chunks.append(chunk)
+
+video_inverted = mpe.concatenate_videoclips(chunks)
+
+# Parte 4: 
+def gradual_volume(clip):
+    def audio_fadeout(get_audio, t):
+        audio = get_audio(t)  
+        volume_factor = np.clip(1 - t / (clip.duration - 10), 0, 1)  
+        if audio.ndim > 1:  
+            volume_factor = volume_factor[:, np.newaxis]  
+        return audio * volume_factor
+
+    
+    if clip.audio is not None:
+        new_audio = clip.audio.fl(audio_fadeout)
+        return clip.set_audio(new_audio)
+    else:
+        print("O clipe não possui áudio.")
+        return clip
+
+video_with_audio = gradual_volume(video_inverted)
+
+# Parte 5:
+part_to_cut = video_with_audio.subclip(60, 80)
+remaining_video = mpe.concatenate_videoclips([
+    video_with_audio.subclip(0, 60),
+    video_with_audio.subclip(80)
+])
+
+final_video = mpe.concatenate_videoclips([remaining_video, part_to_cut])
+
+video_with_audio.ipython_display(width=480, maxduration=200)
+
+
+
+
